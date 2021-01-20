@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 from javaDocToHTML.converter import ConverterToHtml
+from javaDocToHTML.doc_parser import DocFile
 
 
 def get_files_from_dir(dir_name: str, files):
@@ -8,7 +9,7 @@ def get_files_from_dir(dir_name: str, files):
         if file.is_dir():
             get_files_from_dir(str(file), files)
         if file.name.endswith('.java'):
-            pass
+            files.append(DocFile.parse_file(dir_name + '/' + file.name))
     return files
 
 
