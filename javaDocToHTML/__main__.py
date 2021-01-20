@@ -5,6 +5,8 @@ from javaDocToHTML.doc_parser import DocFile
 
 
 def get_files_from_dir(dir_name: str, files):
+    """Method to get all files from dir and parse java data."""
+
     for file in Path(dir_name).iterdir():
         if file.is_dir():
             get_files_from_dir(str(file), files)

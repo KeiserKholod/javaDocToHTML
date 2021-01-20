@@ -2,6 +2,8 @@ from pathlib import Path
 
 
 class ConverterToHtml:
+    """Class, contains methods to create new proj with converted data."""
+
     def __init__(self, files: list, project_name: str, path: str):
         self.directory = Path(f'{path}{project_name}_html_doc')
         if not self.directory.exists():
@@ -10,6 +12,8 @@ class ConverterToHtml:
         self.files = files
 
     def create_html_files(self):
+        """Method to create files and directories."""
+
         with (self.directory / f'{self.project_name}.html') \
                 .open('w+', encoding='utf-8') as f:
             f.write(self.get_common_file())
@@ -20,6 +24,8 @@ class ConverterToHtml:
                 f.write(file.to_html())
 
     def get_common_file(self):
+        """Method to add common data in files like charset and name."""
+
         temp = [f'<head><title>{self.project_name}</title>',
                 '<meta http-equiv="Content-Type" ',
                 'content="text/html; charset=utf-8">',

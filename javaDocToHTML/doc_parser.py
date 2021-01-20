@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from typing import List
 
+# regular expressions to parse data from java files
 start_comm_big = re.compile(r'.*/\*\*.*')
 finish_comm_big = re.compile(r'.*\*/.*')
 class_pattern = re.compile(r'(\w+\s)?class\s(\w+)\s(.*)?.*\s?')
@@ -15,6 +16,9 @@ field_pattern = re.compile(r'(.*) (.*);')
 
 @dataclass
 class Comment:
+    """Class, contains data about java comment in code and
+     methods to parse comments."""
+
     author: str = ''
     version: str = ''
     deprecated: str = ''
@@ -28,6 +32,8 @@ class Comment:
     link: list = field(default_factory=list)
 
     def parse_comment_along_line(self, line):
+        """Method to parse comment."""
+
         if line.find('@author') != -1:
             self.author = line.split('@author')[1].strip()
         elif line.find('@version') != -1:
@@ -55,7 +61,9 @@ class Comment:
         else:
             self.description += line.replace('* ', '').strip() + '\n'
 
-    def full_comment_to_html(self):
+    def convert_comment_to_html(self):
+        """Method to convert comments to html."""
+
         temp = []
         if self.author:
             temp.append(f'<p class = \'left\'>Author: {self.author}</p>')
@@ -92,6 +100,9 @@ class Comment:
 
 @dataclass
 class Method:
+    """Class, contains info about method and
+     Methods to parse java method."""
+
     prototype: str
     mod: str
     name: str
@@ -100,6 +111,8 @@ class Method:
     comment: Comment
 
     def to_html(self):
+        """Converts data to html."""
+
         name = self.name
         temp = [f'<tr><td>{name}</td>'
                 f'<td>{self.prototype}</td>']
@@ -162,11 +175,16 @@ class Method:
 
 @dataclass
 class Field:
+    """Class, contains data about fields and
+     methods to parse fields."""
+
     name: str
     mod: str
     type: str
 
     def to_html(self):
+        """Converts data to html."""
+
         return f'<tr><td>{self.name}</td>' \
                f'<td>{self.mod}</td>' \
                f'<td>{self.type}</td></tr>'
@@ -186,6 +204,9 @@ class Field:
 
 @dataclass
 class DocClass:
+    """Class, contains info about java class and
+     methods to parse classes and all data inside."""
+
     name: str
     mod: str
     parent: str
@@ -198,6 +219,8 @@ class DocClass:
     temp_comment: Comment = None
 
     def to_html(self):
+        """Method to write data in html."""
+
         type_class = 'Class' if self.parent != 'Interface' else self.parent
         temp = [f'\r<p class = "left">{type_class} name: {self.name}</br>',
                 f'Access modifier: {self.mod}</br>']
@@ -299,6 +322,9 @@ class DocClass:
 
 @dataclass
 class DocFile:
+    """Class, contains fiels and methods
+    to create HTML doc file from java file."""
+
     name: str
     classes: List[DocClass]
     comments: List[Comment]
@@ -309,7 +335,7 @@ class DocFile:
                 ' content="text/html; charset=utf-8"></head><body>',
                 f'<h2> Documentation : {self.name}</h1><br>']
         for comment in self.comments:
-            temp.append(comment.full_comment_to_html())
+            temp.append(comment.convert_comment_to_html())
         temp.append(f'<br><br><h4 class = \'left\'>{self.name} '
                     f'contains class/interface:</h3>')
         for doc_class in self.classes:
