@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from javaDocToHTML.converter import ConverterToHtml
 
 
 def get_files_from_dir(dir_name: str, files):
@@ -24,6 +25,7 @@ if __name__ == '__main__':
     for directory in files_or_dirs:
         if Path(directory).exists():
             files = get_files_from_dir(directory, [])
-            # convert
+            converter = ConverterToHtml(files, 'html', directory + '/')
+            converter.create_html_files()
         else:
             print(f'directory {directory} doesnt exist.')
