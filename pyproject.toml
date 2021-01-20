@@ -1,0 +1,3 @@
+[tool.coverage.run]
+source = ["javaDocToHTML"]
+omit = ["*/__main__.py", ".venv/"]
